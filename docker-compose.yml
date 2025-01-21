@@ -28,19 +28,21 @@ services:
       - microservice-network
 
   kafka:
-    image: wurstmeister/kafka:latest
+    image: wurstmeister/kafka
     container_name: microservice-kafka
     environment:
-      - KAFKA_ADVERTISED_LISTENER=PLAINTEXT://kafka:9092
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092  # Слушать все интерфейсы на порту 9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://microservice-kafka:9093  # Рекламировать как доступный на microservice-kafka:9093 (имя контейнера или сервис)
       - KAFKA_LISTENER_SECURITY_PROTOCOL=PLAINTEXT
       - KAFKA_LISTENER_NAME=PLAINTEXT
       - KAFKA_LISTENER_PORT=9092
-      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
     ports:
-      - "9092:9092"
+      - "9093:9093"  # Пробрасываем порт 9093 на хост
     networks:
       - microservice-network
+
+
 
   zookeeper:
     image: wurstmeister/zookeeper:latest
